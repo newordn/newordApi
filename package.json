@@ -1,0 +1,19 @@
+{
+  "name": "NewordApi",
+  "version": "1.0.0",
+  "author": "neword",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "node src/index"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "fs": "^0.0.1-security",
+    "googleapis": "^46.0.0",
+    "graphql-tools": "^4.0.6",
+    "graphql-yoga": "^1.18.3",
+    "moment": "^2.24.0",
+    "prisma-client-lib": "^1.34.10"
+  }
+}

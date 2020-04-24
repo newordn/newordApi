@@ -1,0 +1,13 @@
+type User{
+    id: ID! @id
+    name: String! @unique
+    messages:[Message] @relation(name:"UserMessage")
+    createdAt: DateTime! @createdAt
+}
+
+type Message{
+    id: ID! @id
+    content: String!
+    author: User @relation(name:"UserMessage")
+    createdAt: DateTime! @createdAt
+}
