@@ -6,7 +6,7 @@ const users = async (parent,args,context,info)=>{
 }
 const messagesByUser = async (parent,args,context,info)=>{
     console.log('message user query')
-    const messages = await context.prisma.user({id:args.userId}).messages({orderBy:'id_DESC'})
+    const messages = await context.prisma.user({id:args.userId}).messages()
     return messages
 }
 module.exports={
