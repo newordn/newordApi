@@ -2,6 +2,7 @@ const Query = require('./resolvers/Query')
 const Mutation = require('./resolvers/Mutation')
 const User = require('./resolvers/User')
 const Message = require('./resolvers/Message')
+const Subscription = require('./resolvers/Subscription')
 const {prisma} = require('./generated/prisma-client')
 const {typeDefs} = require('./schema.graphql')
 const {makeExecutableSchema} = require('graphql-tools')
@@ -11,7 +12,8 @@ const resolvers = {
     Query,
     Mutation,
     User,
-    Message  
+    Message,
+    Subscription
 }
 const schema = makeExecutableSchema({typeDefs,resolvers})
 const server = new GraphQLServer({

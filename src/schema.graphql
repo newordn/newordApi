@@ -22,6 +22,9 @@ type Message{
     author: User
     createdAt: String!
 }
+type Subscription{
+    newMessage: Message
+}
 `
 module.exports={
     typeDefs
