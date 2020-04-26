@@ -4,15 +4,17 @@ type Query{
     info:String!
     users: [User!]!
     messagesByUser(userId:ID!):[Message!]!
+    messagesByConversation(conversation:ID!):[Message!]!
 }
 type Mutation{
     user(name:String!):User!
-    message(content:String!, author: ID!): Message!
+    message(content:String!, author: ID!,conversation:ID!): Message!
    }
 type User{
     id: ID!
     name: String!
     messages:[Message]
+    conversation: Conversation!
     createdAt: String!
 }
 
@@ -21,9 +23,15 @@ type Message{
     content: String!
     author: User
     createdAt: String!
+    conversation: Conversation!
 }
 type Subscription{
     newMessage: Message
+}
+type Conversation{
+    id: ID!
+    author: User
+    messages: [Message]
 }
 `
 module.exports={

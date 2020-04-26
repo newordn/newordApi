@@ -1,7 +1,8 @@
 type User{
     id: ID! @id
     name: String! @unique
-    messages:[Message] @relation(name:"UserMessage")
+    conversation: Conversation @relation(name:"UserConversation",link:TABLE)
+    messages: [Message] @relation(name:"UserMessage")
     createdAt: DateTime! @createdAt
 }
 
@@ -9,5 +10,11 @@ type Message{
     id: ID! @id
     content: String!
     author: User @relation(name:"UserMessage")
+    conversation: Conversation @relation(name:"ConversationMessage")
     createdAt: DateTime! @createdAt
+}
+type Conversation{
+    id: ID! @id
+    author: User @relation(name:"UserConversation")
+    messages: [Message] @relation(name:"ConversationMessage")
 }

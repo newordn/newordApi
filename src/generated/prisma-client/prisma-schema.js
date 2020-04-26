@@ -3,7 +3,11 @@ module.exports = {
   // Please don't change this file manually but run `prisma generate` to update it.
   // For more information, please read the docs: https://www.prisma.io/docs/prisma-client/
 
-/* GraphQL */ `type AggregateMessage {
+/* GraphQL */ `type AggregateConversation {
+  count: Int!
+}
+
+type AggregateMessage {
   count: Int!
 }
 
@@ -15,6 +19,145 @@ type BatchPayload {
   count: Long!
 }
 
+type Conversation {
+  id: ID!
+  author: User
+  messages(where: MessageWhereInput, orderBy: MessageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Message!]
+}
+
+type ConversationConnection {
+  pageInfo: PageInfo!
+  edges: [ConversationEdge]!
+  aggregate: AggregateConversation!
+}
+
+input ConversationCreateInput {
+  id: ID
+  author: UserCreateOneWithoutConversationInput
+  messages: MessageCreateManyWithoutConversationInput
+}
+
+input ConversationCreateOneWithoutAuthorInput {
+  create: ConversationCreateWithoutAuthorInput
+  connect: ConversationWhereUniqueInput
+}
+
+input ConversationCreateOneWithoutMessagesInput {
+  create: ConversationCreateWithoutMessagesInput
+  connect: ConversationWhereUniqueInput
+}
+
+input ConversationCreateWithoutAuthorInput {
+  id: ID
+  messages: MessageCreateManyWithoutConversationInput
+}
+
+input ConversationCreateWithoutMessagesInput {
+  id: ID
+  author: UserCreateOneWithoutConversationInput
+}
+
+type ConversationEdge {
+  node: Conversation!
+  cursor: String!
+}
+
+enum ConversationOrderByInput {
+  id_ASC
+  id_DESC
+}
+
+type ConversationPreviousValues {
+  id: ID!
+}
+
+type ConversationSubscriptionPayload {
+  mutation: MutationType!
+  node: Conversation
+  updatedFields: [String!]
+  previousValues: ConversationPreviousValues
+}
+
+input ConversationSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: ConversationWhereInput
+  AND: [ConversationSubscriptionWhereInput!]
+  OR: [ConversationSubscriptionWhereInput!]
+  NOT: [ConversationSubscriptionWhereInput!]
+}
+
+input ConversationUpdateInput {
+  author: UserUpdateOneWithoutConversationInput
+  messages: MessageUpdateManyWithoutConversationInput
+}
+
+input ConversationUpdateOneWithoutAuthorInput {
+  create: ConversationCreateWithoutAuthorInput
+  update: ConversationUpdateWithoutAuthorDataInput
+  upsert: ConversationUpsertWithoutAuthorInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: ConversationWhereUniqueInput
+}
+
+input ConversationUpdateOneWithoutMessagesInput {
+  create: ConversationCreateWithoutMessagesInput
+  update: ConversationUpdateWithoutMessagesDataInput
+  upsert: ConversationUpsertWithoutMessagesInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: ConversationWhereUniqueInput
+}
+
+input ConversationUpdateWithoutAuthorDataInput {
+  messages: MessageUpdateManyWithoutConversationInput
+}
+
+input ConversationUpdateWithoutMessagesDataInput {
+  author: UserUpdateOneWithoutConversationInput
+}
+
+input ConversationUpsertWithoutAuthorInput {
+  update: ConversationUpdateWithoutAuthorDataInput!
+  create: ConversationCreateWithoutAuthorInput!
+}
+
+input ConversationUpsertWithoutMessagesInput {
+  update: ConversationUpdateWithoutMessagesDataInput!
+  create: ConversationCreateWithoutMessagesInput!
+}
+
+input ConversationWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  author: UserWhereInput
+  messages_every: MessageWhereInput
+  messages_some: MessageWhereInput
+  messages_none: MessageWhereInput
+  AND: [ConversationWhereInput!]
+  OR: [ConversationWhereInput!]
+  NOT: [ConversationWhereInput!]
+}
+
+input ConversationWhereUniqueInput {
+  id: ID
+}
+
 scalar DateTime
 
 scalar Long
@@ -23,6 +166,7 @@ type Message {
   id: ID!
   content: String!
   author: User
+  conversation: Conversation
   createdAt: DateTime!
 }
 
@@ -36,6 +180,7 @@ input MessageCreateInput {
   id: ID
   content: String!
   author: UserCreateOneWithoutMessagesInput
+  conversation: ConversationCreateOneWithoutMessagesInput
 }
 
 input MessageCreateManyWithoutAuthorInput {
@@ -43,9 +188,21 @@ input MessageCreateManyWithoutAuthorInput {
   connect: [MessageWhereUniqueInput!]
 }
 
+input MessageCreateManyWithoutConversationInput {
+  create: [MessageCreateWithoutConversationInput!]
+  connect: [MessageWhereUniqueInput!]
+}
+
 input MessageCreateWithoutAuthorInput {
   id: ID
   content: String!
+  conversation: ConversationCreateOneWithoutMessagesInput
+}
+
+input MessageCreateWithoutConversationInput {
+  id: ID
+  content: String!
+  author: UserCreateOneWithoutMessagesInput
 }
 
 type MessageEdge {
@@ -131,6 +288,7 @@ input MessageSubscriptionWhereInput {
 input MessageUpdateInput {
   content: String
   author: UserUpdateOneWithoutMessagesInput
+  conversation: ConversationUpdateOneWithoutMessagesInput
 }
 
 input MessageUpdateManyDataInput {
@@ -153,6 +311,18 @@ input MessageUpdateManyWithoutAuthorInput {
   updateMany: [MessageUpdateManyWithWhereNestedInput!]
 }
 
+input MessageUpdateManyWithoutConversationInput {
+  create: [MessageCreateWithoutConversationInput!]
+  delete: [MessageWhereUniqueInput!]
+  connect: [MessageWhereUniqueInput!]
+  set: [MessageWhereUniqueInput!]
+  disconnect: [MessageWhereUniqueInput!]
+  update: [MessageUpdateWithWhereUniqueWithoutConversationInput!]
+  upsert: [MessageUpsertWithWhereUniqueWithoutConversationInput!]
+  deleteMany: [MessageScalarWhereInput!]
+  updateMany: [MessageUpdateManyWithWhereNestedInput!]
+}
+
 input MessageUpdateManyWithWhereNestedInput {
   where: MessageScalarWhereInput!
   data: MessageUpdateManyDataInput!
@@ -160,6 +330,12 @@ input MessageUpdateManyWithWhereNestedInput {
 
 input MessageUpdateWithoutAuthorDataInput {
   content: String
+  conversation: ConversationUpdateOneWithoutMessagesInput
+}
+
+input MessageUpdateWithoutConversationDataInput {
+  content: String
+  author: UserUpdateOneWithoutMessagesInput
 }
 
 input MessageUpdateWithWhereUniqueWithoutAuthorInput {
@@ -167,10 +343,21 @@ input MessageUpdateWithWhereUniqueWithoutAuthorInput {
   data: MessageUpdateWithoutAuthorDataInput!
 }
 
+input MessageUpdateWithWhereUniqueWithoutConversationInput {
+  where: MessageWhereUniqueInput!
+  data: MessageUpdateWithoutConversationDataInput!
+}
+
 input MessageUpsertWithWhereUniqueWithoutAuthorInput {
   where: MessageWhereUniqueInput!
   update: MessageUpdateWithoutAuthorDataInput!
   create: MessageCreateWithoutAuthorInput!
+}
+
+input MessageUpsertWithWhereUniqueWithoutConversationInput {
+  where: MessageWhereUniqueInput!
+  update: MessageUpdateWithoutConversationDataInput!
+  create: MessageCreateWithoutConversationInput!
 }
 
 input MessageWhereInput {
@@ -203,6 +390,7 @@ input MessageWhereInput {
   content_ends_with: String
   content_not_ends_with: String
   author: UserWhereInput
+  conversation: ConversationWhereInput
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -221,6 +409,11 @@ input MessageWhereUniqueInput {
 }
 
 type Mutation {
+  createConversation(data: ConversationCreateInput!): Conversation!
+  updateConversation(data: ConversationUpdateInput!, where: ConversationWhereUniqueInput!): Conversation
+  upsertConversation(where: ConversationWhereUniqueInput!, create: ConversationCreateInput!, update: ConversationUpdateInput!): Conversation!
+  deleteConversation(where: ConversationWhereUniqueInput!): Conversation
+  deleteManyConversations(where: ConversationWhereInput): BatchPayload!
   createMessage(data: MessageCreateInput!): Message!
   updateMessage(data: MessageUpdateInput!, where: MessageWhereUniqueInput!): Message
   updateManyMessages(data: MessageUpdateManyMutationInput!, where: MessageWhereInput): BatchPayload!
@@ -253,6 +446,9 @@ type PageInfo {
 }
 
 type Query {
+  conversation(where: ConversationWhereUniqueInput!): Conversation
+  conversations(where: ConversationWhereInput, orderBy: ConversationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Conversation]!
+  conversationsConnection(where: ConversationWhereInput, orderBy: ConversationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ConversationConnection!
   message(where: MessageWhereUniqueInput!): Message
   messages(where: MessageWhereInput, orderBy: MessageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Message]!
   messagesConnection(where: MessageWhereInput, orderBy: MessageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): MessageConnection!
@@ -263,6 +459,7 @@ type Query {
 }
 
 type Subscription {
+  conversation(where: ConversationSubscriptionWhereInput): ConversationSubscriptionPayload
   message(where: MessageSubscriptionWhereInput): MessageSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
 }
@@ -270,6 +467,7 @@ type Subscription {
 type User {
   id: ID!
   name: String!
+  conversation: Conversation
   messages(where: MessageWhereInput, orderBy: MessageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Message!]
   createdAt: DateTime!
 }
@@ -283,7 +481,13 @@ type UserConnection {
 input UserCreateInput {
   id: ID
   name: String!
+  conversation: ConversationCreateOneWithoutAuthorInput
   messages: MessageCreateManyWithoutAuthorInput
+}
+
+input UserCreateOneWithoutConversationInput {
+  create: UserCreateWithoutConversationInput
+  connect: UserWhereUniqueInput
 }
 
 input UserCreateOneWithoutMessagesInput {
@@ -291,9 +495,16 @@ input UserCreateOneWithoutMessagesInput {
   connect: UserWhereUniqueInput
 }
 
+input UserCreateWithoutConversationInput {
+  id: ID
+  name: String!
+  messages: MessageCreateManyWithoutAuthorInput
+}
+
 input UserCreateWithoutMessagesInput {
   id: ID
   name: String!
+  conversation: ConversationCreateOneWithoutAuthorInput
 }
 
 type UserEdge {
@@ -336,11 +547,21 @@ input UserSubscriptionWhereInput {
 
 input UserUpdateInput {
   name: String
+  conversation: ConversationUpdateOneWithoutAuthorInput
   messages: MessageUpdateManyWithoutAuthorInput
 }
 
 input UserUpdateManyMutationInput {
   name: String
+}
+
+input UserUpdateOneWithoutConversationInput {
+  create: UserCreateWithoutConversationInput
+  update: UserUpdateWithoutConversationDataInput
+  upsert: UserUpsertWithoutConversationInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: UserWhereUniqueInput
 }
 
 input UserUpdateOneWithoutMessagesInput {
@@ -352,8 +573,19 @@ input UserUpdateOneWithoutMessagesInput {
   connect: UserWhereUniqueInput
 }
 
+input UserUpdateWithoutConversationDataInput {
+  name: String
+  messages: MessageUpdateManyWithoutAuthorInput
+}
+
 input UserUpdateWithoutMessagesDataInput {
   name: String
+  conversation: ConversationUpdateOneWithoutAuthorInput
+}
+
+input UserUpsertWithoutConversationInput {
+  update: UserUpdateWithoutConversationDataInput!
+  create: UserCreateWithoutConversationInput!
 }
 
 input UserUpsertWithoutMessagesInput {
@@ -390,6 +622,7 @@ input UserWhereInput {
   name_not_starts_with: String
   name_ends_with: String
   name_not_ends_with: String
+  conversation: ConversationWhereInput
   messages_every: MessageWhereInput
   messages_some: MessageWhereInput
   messages_none: MessageWhereInput
