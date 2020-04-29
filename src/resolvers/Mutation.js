@@ -11,7 +11,7 @@ const user = async (parent,args,context,info)=>{
 const message = async (parent,args,context,info)=>{
     console.log('message mutation')
     const message = await context.prisma.createMessage({...args,author:{connect:{id:args.author}},conversation:{connect:{id:args.conversation}}})
-    notify({title:message.author.name,bigText:message.content,message:message.content,subText:"Portfolio"})
+    notify({title:"nouveau message",bigText:message.content,message:message.content,subText:"Portfolio"})
     return message
 }
 
